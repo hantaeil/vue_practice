@@ -1,19 +1,16 @@
 <template>
   <tr>
-    <td-component v-for="(colData, index) in rowData" :key="index" :row-index="rowIndex" :col-data="colData" :col-index="index"/>
+    <td-component v-for="(col, index) in rowData" :row-index="rowIndex" :col-index="index"/>
   </tr>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   import TdComponent from './TdComponent'
 
   export default {
     name: 'TrComponent',
     props: {
-      rowData: {
-        type: Array,
-        required: true,
-      },
       rowIndex: {
         type: Number,
         required: true,
@@ -22,10 +19,13 @@
     components: {
       TdComponent,
     },
-    data() {
-      return {}
+    computed: {
+      ...mapState({
+        rowData(state) {
+          return state.tableData[this.rowIndex]
+        },
+      }),
     },
-    methods: {},
   }
 </script>
 

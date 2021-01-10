@@ -1,4 +1,4 @@
 import Vue from 'vue'
-import TicTacToe from './TicTacToe'
+import TicTacToeVuex from './TicTacToeVuex'
 
-new Vue(TicTacToe).$mount('#root')
+new Vue(TicTacToeVuex).$mount('#root')

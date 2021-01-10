@@ -3,6 +3,9 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  import { CHANGE_TURN, CLICK_TD, RESET_GAME, SET_WINNER } from './store'
+
   export default {
     name: 'TdComponent',
     props: {
@@ -10,33 +13,22 @@
         type: Number,
         required: true,
       },
-      colData: {
-        type: String,
-        required: true,
-      },
       colIndex: {
         type: Number,
         required: true,
       },
     },
-    components: {},
-    data() {
-      return {
-
-      }
-    },
     methods: {
-      onClickTd: function () {
+      onClickTd() {
         if (this.colData)
           return false
-        const rootData = this.$root.$data
-        const tableData = rootData.tableData
-        this.$set(tableData[this.rowIndex], this.colIndex, rootData.turn)
-
         let isFinish = false
-        const turn = rootData.turn
+        const turn = this.turn
         const rowIndex = this.rowIndex
         const colIndex = this.colIndex
+        const tableData = this.tableData
+
+        this.$store.commit(CLICK_TD, { rowIndex, colIndex })
         if (tableData[rowIndex][0] === turn && tableData[rowIndex][1] === turn && tableData[rowIndex][2] === turn) {
           isFinish = true
         }
@@ -49,21 +41,31 @@
         if (tableData[0][2] === turn && tableData[1][1] === turn && tableData[2][0] === turn) {
           isFinish = true
         }
-        rootData.turn = rootData.turn === '🤢' ? '😊' : '🤢'
+
+        this.$store.commit(CHANGE_TURN)
         if (isFinish) {
-          rootData.winner = turn
-          rootData.tableData = Array(3).fill(null).map(() => Array(3).fill(''))
+          this.$store.commit(SET_WINNER, turn)
+          this.$store.commit(RESET_GAME)
           return false
         }
         const hasBlank = this.hasBlank(tableData)
         if (!hasBlank) {
-          rootData.tableData = Array(3).fill(null).map(() => Array(3).fill(''))
-          rootData.winner = ''
+          this.$store.commit(RESET_GAME)
         }
       },
       hasBlank(tableData) {
         return [].concat(...tableData).includes('')
       },
+    },
+    computed: {
+      // ...mapState(['tableData', 'turn', 'colData']),
+      ...mapState({
+        tableData: 'tableData',
+        turn: 'turn',
+        colData(state) {
+          return state.tableData[this.rowIndex][this.colIndex]
+        }
+      }),
     },
   }
 </script>

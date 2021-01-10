@@ -7,27 +7,19 @@
 </template>
 
 <script>
-  import { tableData } from './Constants'
+  import store from './store'
+  import { mapState } from 'vuex'
   import TableComponent from './TableComponent'
-
-  const ARRAY_SIZE = 3
-  const getTableData = () => {
-    return Array(ARRAY_SIZE).fill(null).map(() => Array(ARRAY_SIZE).fill(''))
-  }
 
   export default {
     name: 'TicTacToe',
+    store,
     components: {
       TableComponent,
     },
-    data() {
-      return {
-        tableData: tableData,
-        turn: '🤢',
-        winner: '',
-      }
+    computed: {
+      ...mapState(['tableData', 'turn', 'winner']),
     },
-    methods: {},
   }
 </script>
 
